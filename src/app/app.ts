@@ -5,8 +5,10 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('app');
+  protected readonly cells = signal(Array.from({ length: 9 }));
+  protected readonly playerOneMoves = signal([]);
 }
