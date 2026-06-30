@@ -2,6 +2,7 @@
   @if (winner() !== undefined) {
     <p>winner is {{winner()}}</p>
   }
+  <time>{{timer()}}</time>
   <div class="grid grid-cols-3">
     @for (item of cells(); track item) {
       <button (click)="click(item)" class="border border-white aspect-square size-36">

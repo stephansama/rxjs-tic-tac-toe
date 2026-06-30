@@ -1,9 +1,13 @@
 import { Component, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { interval } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 type PlayerType = 'First' | 'Second';
 
 type Cell = { index: number; player?: PlayerType | undefined };
+
+const intialCells = Array.from({ length: 9 }, (_, i) => ({ index: i, player: undefined }) as Cell);
 
 const winConditions = [
   [0, 1, 2],
@@ -14,9 +18,7 @@ const winConditions = [
   [3, 4, 5],
   [2, 5, 8],
   [6, 7, 8],
-];
-
-const intialCells = Array.from({ length: 9 }, (_, i) => ({ index: i, player: undefined }) as Cell);
+] as const;
 
 function checkConditions(moves: number[]) {
   for (const condition of winConditions) {
@@ -34,11 +36,14 @@ function checkConditions(moves: number[]) {
 })
 export class App {
   protected readonly title = signal('app');
+  protected readonly timerObservable = interval(1000);
+  protected readonly timer = toSignal(this.timerObservable, { initialValue: 0 });
   protected readonly cells = signal(intialCells);
   protected readonly currentPlayer = signal('First' as PlayerType);
   protected readonly winner = computed(() => {
     const cells = this.cells();
     const moves = cells.map((cell) => cell.player);
+
     const firstPlayer = moves
       .map((move, index) => (move === 'First' ? index : false))
       .filter((item) => typeof item === 'number');
