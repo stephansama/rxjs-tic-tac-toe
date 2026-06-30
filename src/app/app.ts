@@ -1,12 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 type PlayerType = 'First' | 'Second';
 
-type Cell = {
-  index: number;
-  player?: PlayerType | undefined;
-};
+type Cell = { index: number; player?: PlayerType | undefined };
 
 const winConditions = [
   [0, 1, 2],
@@ -18,6 +15,8 @@ const winConditions = [
   [2, 5, 8],
   [6, 7, 8],
 ];
+
+const intialCells = Array.from({ length: 9 }, (_, i) => ({ index: i, player: undefined }) as Cell);
 
 function checkConditions(moves: number[]) {
   for (const condition of winConditions) {
@@ -35,17 +34,23 @@ function checkConditions(moves: number[]) {
 })
 export class App {
   protected readonly title = signal('app');
-  protected readonly cells = signal(
-    Array.from(
-      { length: 9 },
-      (_, i) =>
-        ({
-          index: i,
-          player: undefined,
-        }) as Cell,
-    ),
-  );
+  protected readonly cells = signal(intialCells);
   protected readonly currentPlayer = signal('First' as PlayerType);
+  protected readonly winner = computed(() => {
+    const cells = this.cells();
+    const moves = cells.map((cell) => cell.player);
+    const firstPlayer = moves
+      .map((move, index) => (move === 'First' ? index : false))
+      .filter((item) => typeof item === 'number');
+    const secondPlayer = moves
+      .map((move, index) => (move === 'Second' ? index : false))
+      .filter((item) => typeof item === 'number');
+
+    if (checkConditions(firstPlayer)) return 'First';
+    if (checkConditions(secondPlayer)) return 'Second';
+
+    return undefined;
+  });
   protected click(cell: Cell) {
     const currentPlayer = this.currentPlayer();
     this.cells.set(
@@ -55,16 +60,5 @@ export class App {
       }),
     );
     this.currentPlayer.set(currentPlayer === 'First' ? 'Second' : 'First');
-    const moves = this.cells().map((cell) => cell.player);
-    const firstPlayer = moves
-      .map((move, index) => (move === 'First' ? index : false))
-      .filter((item) => typeof item === 'number');
-    const secondPlayer = moves
-      .map((move, index) => (move === 'Second' ? index : false))
-      .filter((item) => typeof item === 'number');
-
-    if (checkConditions(firstPlayer)) console.info('first player won');
-    if (checkConditions(secondPlayer)) console.info('second player won');
-    console.log(firstPlayer, secondPlayer);
   }
 }
