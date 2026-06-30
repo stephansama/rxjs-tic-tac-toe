@@ -3,5 +3,5 @@
 @import 'tailwindcss';
 
 body {
-  @apply flex items-center justify-center flex-col min-w-screen min-h-screen bg-black;
+  @apply flex items-center justify-center flex-col min-w-screen min-h-screen bg-black text-white;
 }
