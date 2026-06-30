@@ -2,7 +2,7 @@
   <div class="grid grid-cols-3">
     @for (item of cells(); track item) {
       <button (click)="click(item)" class="border border-white aspect-square size-36">
-        <span>{{ item.player }}%</span>
+        <span>{{ item.player }}</span>
       </button>
     }
   </div>
