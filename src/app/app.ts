@@ -47,11 +47,11 @@ export class App {
     const firstPlayer = moves
       .map((move, index) => (move === 'First' ? index : false))
       .filter((item) => typeof item === 'number');
+    if (checkConditions(firstPlayer)) return 'First';
+
     const secondPlayer = moves
       .map((move, index) => (move === 'Second' ? index : false))
       .filter((item) => typeof item === 'number');
-
-    if (checkConditions(firstPlayer)) return 'First';
     if (checkConditions(secondPlayer)) return 'Second';
 
     return undefined;
